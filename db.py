@@ -116,6 +116,8 @@ if __name__ == '__main__':
 
     Artifacts = db.Table('artifacts', metadata,
               db.Column('id', db.Integer(), primary_key=True),
+              db.Column('full_name', db.String(255), nullable=False), # artifact repo path
+              db.Column('commit_url', db.String(), nullable=False), # artifact repo path
               db.Column('ref', db.String(255), nullable=False), # branch
               db.Column('commit', db.String(255), nullable=False), # commit hash
               db.Column('date', db.DateTime(), nullable=False) # commit date
