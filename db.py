@@ -103,4 +103,21 @@ if __name__ == '__main__':
     #          db.Column("actions_id", db.Integer(), db.ForeignKey("actions.id"), nullable=False),
     #)
 
+    Containers = db.Table('containers', metadata,
+              db.Column('id', db.Integer(), primary_key=True),
+              db.Column("resource_url", db.String(255), nullable=False),
+              db.Column("host", db.String(255), nullable=False),
+              db.Column('project', db.String(255), nullable=False),
+              db.Column('image', db.String(255), nullable=False),
+              db.Column('tag', db.String(255), nullable=False),
+              db.Column('digest', db.String(64), nullable=False),
+              db.Column('date', db.DateTime(), nullable=False),
+    )
+
+    Artifacts = db.Table('artifacts', metadata,
+              db.Column('id', db.Integer(), primary_key=True),
+              db.Column('ref', db.String(255), nullable=False), # branch
+              db.Column('commit', db.String(255), nullable=False), # commit hash
+              db.Column('date', db.DateTime(), nullable=False) # commit date
+    )
     metadata.create_all(engine)
