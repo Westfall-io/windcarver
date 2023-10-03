@@ -49,13 +49,13 @@ if __name__ == '__main__':
     metadata = db.MetaData()
 
     Commits = db.Table('commits', metadata,
-              db.Column('id', db.Integer(), primary_key=True),
+              db.Column('id', db.Integer(), primary_key=True, unique=True),
               db.Column('ref', db.String(255), nullable=False), # branch
               db.Column('commit', db.String(255), nullable=False), # commit hash
               db.Column('date', db.DateTime(), nullable=False) # commit date
     )
     Models = db.Table('models', metadata,
-              db.Column('id', db.Integer(), primary_key=True),
+              db.Column('id', db.Integer(), primary_key=True, unique=True),
               db.Column("commit_id", db.Integer(), db.ForeignKey("commits.id"), nullable=False),
               db.Column('nb_id', db.String(36), nullable=False), #notebook id
               db.Column('execution_order', db.Integer(), nullable=False),
@@ -66,29 +66,33 @@ if __name__ == '__main__':
               db.Column('element_name', db.String(255), nullable=False),
     )
     Elements = db.Table('elements', metadata,
-              db.Column('id', db.Integer(), primary_key=True),
+              db.Column('id', db.Integer(), primary_key=True, unique=True),
               db.Column("commit_id", db.Integer(), db.ForeignKey("commits.id"), nullable=False),
               db.Column('element_id', db.String(36), nullable=False),
               db.Column('element_text', db.String(), nullable=False),
               db.Column('element_name', db.String(255), nullable=False),
     )
     Models_Elements = db.Table('models_elements', metadata,
-              db.Column('id', db.Integer(), primary_key=True),
+              db.Column('id', db.Integer(), primary_key=True, unique=True),
               db.Column("model_id", db.Integer(), db.ForeignKey("models.id"), nullable=False),
               db.Column("element_id", db.Integer(), db.ForeignKey("elements.id"), nullable=False),
     )
     Requirements = db.Table('requirements', metadata,
-              db.Column('id', db.Integer(), primary_key=True),
-              db.Column('name', db.String(255), nullable=False), # branch
+              db.Column('id', db.Integer(), primary_key=True, unique=True),
+              db.Column("commit_id", db.Integer(), db.ForeignKey("commits.id"), nullable=False),
+              db.Column('declaredName', db.String(255), nullable=True),
+              db.Column('shortName', db.String(255), nullable=True),
+              db.Column('qualifiedName', db.String(255), nullable=True), 
               db.Column("element_id", db.Integer(), db.ForeignKey("elements.id"), nullable=False),
     )
     Verifications = db.Table('verifications', metadata,
-              db.Column('id', db.Integer(), primary_key=True),
+              db.Column('id', db.Integer(), primary_key=True, unique=True),
+              db.Column("commit_id", db.Integer(), db.ForeignKey("commits.id"), nullable=False),
               db.Column("element_id", db.Integer(), db.ForeignKey("elements.id"), nullable=False),
               db.Column("requirement_id", db.Integer(), db.ForeignKey("requirements.id"), nullable=False),
     )
     Actions = db.Table('actions', metadata,
-              db.Column('id', db.Integer(), primary_key=True),
+              db.Column('id', db.Integer(), primary_key=True, unique=True),
               db.Column("element_id", db.Integer(), db.ForeignKey("elements.id"), nullable=False),
               db.Column("verifications_id", db.Integer(), db.ForeignKey("verifications.id"), nullable=False),
               db.Column('declaredName', db.String(255), nullable=False),
@@ -104,12 +108,17 @@ if __name__ == '__main__':
     #)
 
     Containers = db.Table('containers', metadata,
-              db.Column('id', db.Integer(), primary_key=True),
+              db.Column('id', db.Integer(), primary_key=True, unique=True),
               db.Column("resource_url", db.String(255), nullable=False),
               db.Column("host", db.String(255), nullable=False),
               db.Column('project', db.String(255), nullable=False),
               db.Column('image', db.String(255), nullable=False),
               db.Column('tag', db.String(255), nullable=False),
+    )
+
+    Container_Commits = db.Table('container_commits', metadata,
+              db.Column('id', db.Integer(), primary_key=True, unique=True),
+              db.Column("containers_id", db.Integer(), db.ForeignKey("containers.id"), nullable=False),
               db.Column('digest', db.String(64), nullable=False),
               db.Column('date', db.DateTime(), nullable=False),
     )
@@ -118,6 +127,11 @@ if __name__ == '__main__':
               db.Column('id', db.Integer(), primary_key=True),
               db.Column('full_name', db.String(255), nullable=False), # artifact repo path
               db.Column('commit_url', db.String(), nullable=False), # artifact repo path
+    )
+
+    Artifacts_Commits = db.Table('artifact_commits', metadata,
+              db.Column('id', db.Integer(), primary_key=True),
+              db.Column("artifacts_id", db.Integer(), db.ForeignKey("artifacts.id"), nullable=False),
               db.Column('ref', db.String(255), nullable=False), # branch
               db.Column('commit', db.String(255), nullable=False), # commit hash
               db.Column('date', db.DateTime(), nullable=False) # commit date
