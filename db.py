@@ -19,15 +19,18 @@ import os
 import sqlalchemy as db
 from sqlalchemy import inspect
 
-SQLDEF = "localhost:5432"
-SQLHOST = os.environ.get("SQLHOST",SQLDEF)
-
 def connect():
     db_type = "postgresql"
-    user = "postgres"
-    passwd = "mysecretpassword"
-    address = SQLHOST
-    db_name = "sysml2"
+    user = input('Enter username [postgres]:')
+    if user == '':
+        user = "postgres"
+    passwd = input('Enter password [mysecretpassword]:')
+    if passwd == '':
+        passwd = "mysecretpassword"
+    address = "localhost:5432"
+    db_name = input('Enter database name [sysml2]:')
+    if db_name == '':
+        db_name = "sysml2"
 
     address = db_type+"://"+user+":"+passwd+"@"+address+"/"+db_name
     engine = db.create_engine(address)
